@@ -49,7 +49,13 @@ class Admin(db.Model, SerializerMixin):
 class Vehicle(db.Model, SerializerMixin):
     __tablename__ = 'vehicles'
 
-    serialize_rules = ('-admin.vehicles', '-driver.vehicle', '-trips.vehicle', '-maintenance_records.vehicle', '-charging_sessions.vehicle',)
+    serialize_rules = (
+        '-admin.vehicles', 
+        '-driver.vehicle', 
+        '-trips.vehicle', 
+        '-maintenance_records.vehicle', 
+        '-charging_sessions.vehicle',
+        )
 
     STATUS_CHOICES = ('idle', 'active', 'maintenance', 'charging')
 
@@ -65,7 +71,7 @@ class Vehicle(db.Model, SerializerMixin):
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'))
     # admin = db.relationship('Admin', back_populates='vehicles')
 
-    driver = db.relationship('Driver', backref='vehicle', uselist=False, cascade='all, delete-orphan')
+    driver = db.relationship('Driver', backref='vehicle', cascade='all, delete-orphan')
     trips = db.relationship('Trip', backref='vehicle', cascade='all, delete-orphan', lazy=True)
     maintenance_records = db.relationship('MaintenanceRecord', backref='vehicle', cascade='all, delete-orphan', lazy=True)
     charging_sessions = db.relationship('ChargingSession', backref='vehicle', cascade='all, delete-orphan', lazy=True)
@@ -83,7 +89,10 @@ class Vehicle(db.Model, SerializerMixin):
 class Driver(db.Model, SerializerMixin):
     __tablename__ = 'drivers'
 
-    serialize_rules = ('-vehicle.driver', '-trips.driver',)
+    serialize_rules = (
+        '-vehicle.driver', 
+        '-trips.driver',
+        )
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -108,7 +117,11 @@ class Driver(db.Model, SerializerMixin):
 class Trip(db.Model, SerializerMixin):
     __tablename__ = 'trips'
 
-    serialize_rules = ('-vehicle.trips', '-driver.trips', '-route.trips',)
+    serialize_rules = (
+        '-vehicle.trips', 
+        '-driver.trips', 
+        '-route.trips',
+        )
 
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime)
