@@ -297,8 +297,10 @@ class Trips(Resource):
                     "-vehicle.trips",
                     "-driver.trips",
                     "-route.trips",
+                    "-vehicle.driver.vehicle",
+                    "-driver.vehicle.driver"
                 ))
-                trips_list.append(trip_dict())
+                trips_list.append(trip_dict)
             except Exception as e:
                 trips_list.append(handle_serialization_error(e, "Trip", trip.id))
 
@@ -322,7 +324,45 @@ class TripByID(Resource):
             ))
             return trip_dict, 200
         except Exception as e:
-            return handle_serialization_error(e, "Trip", id), 
+            return handle_serialization_error(e, "Trip", id), 500
+        
+class Routes(Resource):
+    def get(self):
+        if not session.get('admin_id'):
+            return {'error': 'Unauthorized'}, 401
+        
+        routes_list = []
+        all_routes = Route.query.order_by(Route.name).all()
+
+        for route_obj in all_routes:
+            try:
+                route_dict = route_obj.to_dict(rules=('-trips',))
+                routes_list.append(route_dict)
+            except Exception as e:
+                routes_list.append(handle_serialization_error(e, "Route", route_obj.id))
+
+        return routes_list, 200
+
+class RouteByID(Resource):
+    def get(self, id):
+        if not session.get('admin_id'):
+            return {'error': 'Unauthorized'}, 401
+
+        route = Route.query.filter_by(id=id)
+
+        if not route:
+            return {"error": "Route not found"}, 404
+        
+        try:
+            route_dict = route.to_dict(rules=(
+                "-trips.route",
+                "-trips.vehicle.trips",
+                "-trips.driver.trips",
+            ))
+            return route_dict, 200
+        except Exception as e:
+            return handle_serialization_error(e, "Route", id), 500
+    
 
 
 api.add_resource(Vehicles, '/vehicles')
@@ -340,7 +380,8 @@ api.add_resource(ClearSession, '/clear-session')
 api.add_resource(SignUp, '/signup')
 api.add_resource(Trips, '/trips')
 api.add_resource(TripByID, '/trips/<int:id>')
-
+api.add_resource(Routes, '/routes')
+api.add_resource(RouteByID, '/routes/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
