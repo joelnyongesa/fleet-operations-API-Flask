@@ -29,7 +29,7 @@ root/
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone git@github.com:joelnyongesa/fleet-operations-API-Flask.git
 cd fleet-operations-api-FLASK
 ```
 
