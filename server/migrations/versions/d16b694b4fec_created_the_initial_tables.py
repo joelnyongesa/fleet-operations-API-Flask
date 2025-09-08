@@ -1,8 +1,8 @@
-"""Initial migrations
+"""Created the initial tables
 
-Revision ID: e438bd7cf101
+Revision ID: d16b694b4fec
 Revises: 
-Create Date: 2025-05-05 11:38:10.542594
+Create Date: 2025-09-08 11:13:18.127320
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e438bd7cf101'
+revision = 'd16b694b4fec'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=True),
     sa.Column('_password_hash', sa.String(length=200), nullable=True),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
@@ -42,7 +42,7 @@ def upgrade():
     sa.Column('capacity', sa.Integer(), nullable=True),
     sa.Column('number_plate', sa.String(length=20), nullable=True),
     sa.Column('current_status', sa.Enum('idle', 'active', 'maintenance', 'charging', name='vehicle_status'), nullable=False),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['admin_id'], ['admins.id'], name=op.f('fk_vehicles_admin_id_admins')),
@@ -65,7 +65,7 @@ def upgrade():
     sa.Column('phone', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('is_available', sa.Boolean(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('vehicle_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['vehicle_id'], ['vehicles.id'], name=op.f('fk_drivers_vehicle_id_vehicles')),
